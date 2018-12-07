@@ -1,5 +1,7 @@
-﻿using Foundation;
+﻿using System.Diagnostics;
+using Foundation;
 using UIKit;
+using Xamarin.Fliclib.Binding.iOS;
 
 namespace FlicExample
 {
@@ -8,18 +10,23 @@ namespace FlicExample
     [Register("AppDelegate")]
     public class AppDelegate : UIApplicationDelegate
     {
+        private const string AppKey = "Your key here";
+
+        private const string AppSecret = "Your secret here";
         // class-level declarations
 
-        public override UIWindow Window
-        {
-            get;
-            set;
-        }
+        public override UIWindow Window { get; set; }
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
         {
             // Override point for customization after application launch.
             // If not required for your application you can safely delete this method
+            SCLFlicManager.ConfigureWithDelegate(null,
+                null,
+                AppKey,
+                AppSecret,
+                false
+            );
 
             return true;
         }
@@ -54,6 +61,11 @@ namespace FlicExample
         {
             // Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
         }
+
+        public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+        {
+            Debug.WriteLine($"Open url");
+            return SCLFlicManager.SharedManager().HandleOpenURL(url);
+        }
     }
 }
-
